@@ -130,7 +130,7 @@ function Cards({ setWinner }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 mt-5 gap-4 relative">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 mt-5 gap-20 relative mx-auto">
       {cards.map((card, index) => (
         <Card
           key={index}
