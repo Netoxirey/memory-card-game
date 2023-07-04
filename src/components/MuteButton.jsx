@@ -4,7 +4,7 @@ import Unmute from "../assets/sound--on.svg";
 import Background from "../assets/background.mp3";
 
 function MuteButton() {
-  const [mute, setMute] = useState(true);
+  const [mute, setMute] = useState(false);
   const audioRef = useRef(null);
 
   const toggleAudio = () => {
