@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 import matchSound from "../assets/correct.mp3";
@@ -16,7 +16,6 @@ function Cards({ setWinner }) {
     { id: 3, name: "Comet", status: "", flipped: false },
     { id: 3, name: "Comet", status: "", flipped: false },
   ].sort(() => Math.random() - Math.random()));
-
   const [prevCardIndex, setPrevCardIndex] = useState(-1);
   const [disableCards, setDisableCards] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -52,16 +51,17 @@ function Cards({ setWinner }) {
 
   const checkForMatch = () => {
     const flippedCards = cards.filter((card) => card.flipped && card.status !== "correct");
+
     if (flippedCards.length === 2) {
       const [firstCard, secondCard] = flippedCards;
-      if (firstCard.id === secondCard.id) {
+      const isMatch = firstCard.id === secondCard.id;
+
+      if (isMatch) {
         playSound(matchSound);
         setTimeout(() => {
           setCards((prevCards) =>
             prevCards.map((card) =>
-              card.id === firstCard.id || card.id === secondCard.id
-                ? { ...card, status: "correct" }
-                : card
+              card.id === firstCard.id || card.id === secondCard.id ? { ...card, status: "correct" } : card
             )
           );
           setPrevCardIndex(-1);
@@ -69,9 +69,11 @@ function Cards({ setWinner }) {
           setMessage("Nice! It's a match");
           setDisableCards(true);
           setMatches((prevMatches) => prevMatches + 1);
+
           setTimeout(() => {
             setShowModal(false);
             setDisableCards(false);
+
             if (matches === 3) {
               navigate("/results");
               setWinner(true);
@@ -85,11 +87,7 @@ function Cards({ setWinner }) {
         setMessage("Sorry, but this is not a match");
         setTimeout(() => {
           setCards((prevCards) =>
-            prevCards.map((card) =>
-              card.flipped && card.status !== "correct"
-                ? { ...card, flipped: false }
-                : card
-            )
+            prevCards.map((card) => (card.flipped && card.status !== "correct" ? { ...card, flipped: false } : card))
           );
           setPrevCardIndex(-1);
           setDisableCards(false);
@@ -100,23 +98,22 @@ function Cards({ setWinner }) {
   };
 
   const handleClick = (index) => {
-    if (!disableCards && !cards[index].flipped && cards[index].status !== "correct") {
-      setCards((prevCards) =>
-        prevCards.map((card, i) =>
-          i === index ? { ...card, flipped: true } : card
-        )
-      );
-      if (prevCardIndex === -1) {
-        setPrevCardIndex(index);
-      } else {
-        setPrevCardIndex(-1);
-      }
+    if (cards[index].flipped) {
+      return;
     }
+
+    if (prevCardIndex !== -1) {
+      setCards((prevCards) =>
+        prevCards.map((card, i) => (i === prevCardIndex ? { ...card, flipped: false } : card))
+      );
+    }
+
+    setCards((prevCards) => prevCards.map((card, i) => (i === index ? { ...card, flipped: true } : card)));
+    setPrevCardIndex(-1);
   };
 
-  const playSound = (sound, loop = false) => {
+  const playSound = (sound) => {
     const audio = new Audio(sound);
-    audio.loop = loop;
     audio.play();
   };
 
@@ -124,6 +121,7 @@ function Cards({ setWinner }) {
     setDisableCards(true);
     setShowModal(true);
     setMessage("Time's up!");
+
     setTimeout(() => {
       navigate("/results");
     }, 1000);
@@ -132,12 +130,7 @@ function Cards({ setWinner }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 mt-5 gap-20 relative mx-auto">
       {cards.map((card, index) => (
-        <Card
-          key={index}
-          card={card}
-          handleClick={() => handleClick(index)}
-          disable={disableCards}
-        />
+        <Card key={index} card={card} handleClick={() => handleClick(index)} disable={disableCards} />
       ))}
       {showModal && (
         <div className="modal">

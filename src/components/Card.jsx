@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import Moon from "../assets/moon.svg";
 import Star from "../assets/star.svg";
 import Sun from "../assets/sun.svg";
@@ -34,7 +35,7 @@ function Card({ card, handleClick, index }) {
       <div className={`card ${classItem} ${isFlipping ? "flipping" : ""}`}>
         <div className="card__face card__face--front">?</div>
         <div className="card__face card__face--back">
-          <img src={cardsImages[card.name]} alt="" />
+          <img src={cardsImages[card.name]} alt={card.name} />
         </div>
       </div>
     </div>
